@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eesti keel</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0077cc">
+<style>
+  body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+  #question-image { max-width: 100%; margin: 10px 0; display: none; }
+  button { display: block; margin: 5px 0; padding: 10px; font-size: 16px; }
+  #resetBtn { margin-top: 20px; background-color: #f3e8e7; color: #080808; }
+  input[type="text"] { width: 100%; padding: 10px; font-size: 16px; margin: 5px 0; }
+  .highlight {
+    background-color: yellow;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h2>Õiged vastused: <span id="correct-count">0</span></h2>
+<h2 id="question-text"></h2>
+<img id="question-image">
+<div id="choices"></div>
+<input type="text" id="typed-answer" placeholder="Kirjuta sõna siia" style="display:none;">
+<button id="submit-answer" style="display:none;">Esita vastus</button>
+<button id="resetBtn">Alusta uuesti</button>
+
+<script>
+let questions = [];
+let currentQuestion = 0;
+let userAnswers = [];
+let correctCount = 0;
+
+// Load questions from JSON
+async function loadQuestions() {
+  try {
+    const response = await fetch('questions.json');
+    return await response.json();
+  } catch(e) {
+    console.error("Failed to load questions.json", e);
+    return [];
+  }
+}
+
+// Show question
+function showQuestion(q) {
+  const questionText = document.getElementById('question-text');
+  const questionImage = document.getElementById('question-image');
+  const choicesContainer = document.getElementById('choices');
+  const typedInput = document.getElementById('typed-answer');
+  const submitBtn = document.getElementById('submit-answer');
+
+  questionText.textContent = q.text;
+
+  // Highlight word if defined
+  if (q.highlight) {
+    const regex = new RegExp(`(${q.highlight})`, 'gi'); // case-insensitive
+    questionText.innerHTML = q.text.replace(regex, '<span class="highlight">$1</span>');
+  } else {
+    questionText.textContent = q.text;
+  }
+
+  // Show image if exists
+  if (q.image) {
+    questionImage.src = q.image;
+    questionImage.style.display = 'block';
+  } else {
+    questionImage.style.display = 'none';
+  }
+
+  // Play audio if exists
+  if (q.audio) {
+    new Audio(q.audio).play();
+  } else if (q.tts) {
+    const utterance = new SpeechSynthesisUtterance(q.tts);
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // Multiple-choice or typed-answer
+  if (q.choices) {
+    typedInput.style.display = 'none';
+    submitBtn.style.display = 'none';
+    choicesContainer.innerHTML = '';
+    q.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.textContent = choice;
+      btn.onclick = () => checkAnswer(choice, q.correct);
+      choicesContainer.appendChild(btn);
+    });
+  } else {
+    choicesContainer.innerHTML = '';
+    typedInput.style.display = 'block';
+    submitBtn.style.display = 'block';
+    typedInput.value = '';
+    submitBtn.onclick = () => checkAnswer(typedInput.value.trim(), q.correct);
+  }
+}
+
+function checkAnswer(selected, correct) {
+  userAnswers[currentQuestion] = selected;
+
+  // Count correct answers
+  if (selected.toLowerCase() === correct.toLowerCase()) {
+    correctCount++;
+  }
+
+  // Update counter
+  document.getElementById('correct-count').textContent = correctCount;
+
+  // Show correct answer feedback
+  const choicesContainer = document.getElementById('choices');
+  choicesContainer.innerHTML = `<p>Õige vastus: <strong>${correct}</strong></p>`;
+  let isCorrect = selected.toLowerCase() === correct.toLowerCase();
+
+  // Show immediate feedback
+  if (isCorrect) {
+    choicesContainer.innerHTML = `<p style="color:green; font-weight:bold;">Õige! Vastus: ${correct}</p>`;
+  } else {
+    choicesContainer.innerHTML = `<p style="color:red; font-weight:bold;">Vale! Õige vastus: ${correct}</p>`;
+  }
+
+  // Save progress
+  localStorage.setItem('quizProgress', JSON.stringify({
+    currentQuestion: currentQuestion + 1,
+    answers: userAnswers,
+    correctCount: correctCount
+  }));
+
+  // Wait 5 seconds then go to next question
+  setTimeout(() => {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
+      showQuestion(questions[currentQuestion]);
+    } else {
+      showResults();
+      localStorage.removeItem('quizProgress');
+    }
+  }, 5000); // 5000 ms = 5 seconds
+}
+
+// Show final results
+function showResults() {
+  const questionText = document.getElementById('question-text');
+  const choicesContainer = document.getElementById('choices');
+  const questionImage = document.getElementById('question-image');
+  const typedInput = document.getElementById('typed-answer');
+  const submitBtn = document.getElementById('submit-answer');
+
+  questionText.textContent = "Mäng läbi!";
+  questionImage.style.display = 'none';
+  typedInput.style.display = 'none';
+  submitBtn.style.display = 'none';
+
+  // Build table of answers
+  let tableHTML = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+  tableHTML += '<tr><th>#</th><th>Sinu vastus</th><th>Õige vastus</th></tr>';
+
+  for (let i = 0; i < questions.length; i++) {
+    const userAnswer = userAnswers[i] || '';
+    const correctAnswer = questions[i].correct || '';
+    const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+    const cellStyle = isCorrect ? '' : 'background-color: #f8d7da;'; // red for wrong answers
+
+    tableHTML += `<tr>
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td style="${cellStyle}">${userAnswer}</td>
+                    <td>${correctAnswer}</td>
+                  </tr>`;
+  }
+  tableHTML += '</table>';
+
+  choicesContainer.innerHTML = `
+    <p>Õiged vastused kokku: ${correctCount} / ${questions.length}</p>
+    ${tableHTML}
+  `;
+}
+
+
+// Reset game
+document.getElementById('resetBtn').addEventListener('click', () => {
+  localStorage.removeItem('quizProgress');
+  currentQuestion = 0;
+  userAnswers = [];
+  correctCount = 0;
+  document.getElementById('correct-count').textContent = 0;
+  showQuestion(questions[currentQuestion]);
+});
+
+// Load questions and resume if saved
+window.addEventListener('load', async () => {
+  questions = await loadQuestions();
+  const saved = JSON.parse(localStorage.getItem('quizProgress'));
+  if (saved) {
+    currentQuestion = saved.currentQuestion;
+    userAnswers = saved.answers;
+    correctCount = saved.correctCount || 0;
+    document.getElementById('correct-count').textContent = correctCount;
+  } else {
+    userAnswers = [];
+    correctCount = 0;
+  }
+  showQuestion(questions[currentQuestion]);
+});
+
+// Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(() => console.log('Service Worker registered'))
+    .catch(err => console.log('Service Worker failed:', err));
+}
+</script>
+
+</body>
+</html>

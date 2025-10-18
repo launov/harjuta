@@ -1,0 +1,13 @@
+{
+    "name": "Eesti keele mäng",
+    "short_name": "EestiKeel",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#f9f9ff",
+    "theme_color": "#0077cc",
+    "icons": [
+      { "src": "images/malumang.jpg", "sizes": "192x192", "type": "image/png" },
+      { "src": "images/malumang.jpg", "sizes": "512x512", "type": "image/png" }
+    ]
+  }
+  

@@ -1,0 +1,27 @@
+[
+    {
+      "text": "Kirjuta vastandsõna sõnale 'ÕHTU'",
+      "highlight": "vastandsõna",
+      "correct": "hommik"
+    },
+    {
+      "text": "Kuidas on õige kirjutada?",
+      "choices": ["tasima", "taasima", "tassima"],
+      "correct": "tassima"
+    },
+    {
+      "text": "Milline sõna on õige?",
+      "choices": ["õun", "oun", "uun", "oan"],
+      "correct": "õun"
+    },
+    {
+      "text": "Kirjuta ära sõna, mida kuuled",
+      "audio": "audio/kass.mp3",
+      "correct": "kass"
+    },
+    {
+      "text": "Kirjuta ära sõna, mida näed pildil",
+      "image": "images/koer.jpg",
+      "correct": "koer"
+    }
+  ]
