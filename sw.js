@@ -1,5 +1,5 @@
 // ✅ CHANGE THIS when you update your game (new files, questions, etc.)
-const CACHE_NAME = 'estonian-spelling-cache-v5';
+const CACHE_NAME = 'estonian-spelling-cache-v6';
 
 // ✅ List of all files to cache
 const FILES_TO_CACHE = [
