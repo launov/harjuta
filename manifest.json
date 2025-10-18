@@ -1,7 +1,7 @@
 {
     "name": "Eesti keele mäng",
     "short_name": "EestiKeel",
-    "start_url": "/index.html",
+    "start_url": "/",
     "display": "standalone",
     "background_color": "#f9f9ff",
     "theme_color": "#0077cc",
