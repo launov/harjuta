@@ -1,27 +1,87 @@
 [
-    {
-      "text": "Kirjuta vastandsõna sõnale 'ÕHTU'",
-      "highlight": "vastandsõna",
-      "correct": "hommik"
-    },
-    {
-      "text": "Kuidas on õige kirjutada?",
-      "choices": ["tasima", "taasima", "tassima"],
-      "correct": "tassima"
-    },
-    {
-      "text": "Milline sõna on õige?",
-      "choices": ["õun", "oun", "uun", "oan"],
-      "correct": "õun"
-    },
-    {
-      "text": "Kirjuta ära sõna, mida kuuled",
-      "audio": "audio/kass.mp3",
-      "correct": "kass"
-    },
-    {
-      "text": "Kirjuta ära sõna, mida näed pildil",
-      "image": "images/koer.jpg",
-      "correct": "koer"
-    }
-  ]
+  {
+    "text": "Kirjuta vastandsõna sõnale ÕHTU",
+    "highlight": "sõnale",
+    "correct": "hommik"
+  },
+  {
+    "text": "Kuidas on õige kirjutada?",
+    "choices": [
+      "tassima",
+      "tasima",
+      "taasima"
+    ],
+    "correct": "tassima"
+  },
+  {
+    "text": "Mis sõna sa kuuled?",
+    "audio": "audio/kass.mp3",
+    "correct": "kass"
+  },
+  {
+    "text": "Mis on pildil?",
+    "image": "images/koer.jpg",
+    "correct": "koer"
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "lemmik",
+      "lemik"
+    ],
+    "correct": "lemmik"
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "kalis",
+      "kallis"
+    ],
+    "correct": "kallis"
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "staadion",
+      "stadion"
+    ]
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "pois",
+      "poiss"
+    ]
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "sünipäev",
+      "sünnipäev"
+    ]
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "tiivan",
+      "diivan",
+      "tivan"
+    ]
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "aff",
+      "ahv",
+      "af"
+    ]
+  },
+  {
+    "text": "Kuidas on õige?",
+    "choices": [
+      "kohv",
+      "kof",
+      "koff"
+    ]
+  }
+]
