@@ -1,217 +1,394 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eesti keel</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0077cc">
-<style>
-  body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; }
-  #question-image { max-width: 100%; margin: 10px 0; display: none; }
-  button { display: block; margin: 5px 0; padding: 10px; font-size: 16px; }
-  #resetBtn { margin-top: 20px; background-color: #f3e8e7; color: #080808; }
-  input[type="text"] { width: 100%; padding: 10px; font-size: 16px; margin: 5px 0; }
-  .highlight {
-    background-color: yellow;
-    font-weight: bold;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eesti keel PWA</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0077cc" />
+  <style>
+    :root{
+      --primary:#2a4b8d;
+      --accent:#f8d7da; /* light red for wrong */
+      --good:#a9f5a9;
+      --bg:#f3f8ff;
+    }
+    body{font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; padding:0; color:#222;}
+    .wrap{max-width:900px;margin:0 auto;padding:18px;}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+    h1{font-size:1.6rem;color:var(--primary);margin:0;}
+    #progress{font-size:1rem;color:#444;}
+
+    #question-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(30,50,90,0.06);margin-top:12px;}
+    #correct-count{font-weight:700;color:var(--primary);font-size:1.05rem;margin-bottom:8px;}
+    #question{font-size:1.9rem;line-height:1.2;margin:8px 0 12px 0;}
+    .highlight{background:yellow;padding:0 6px;border-radius:4px;font-weight:700;}
+
+    #media{display:flex;flex-direction:column;gap:10px;align-items:center;margin-bottom:12px;}
+    #question-image{max-width:100%;height:auto;border-radius:10px;display:none;box-shadow:0 4px 10px rgba(0,0,0,0.08);}
+    #play-audio{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--primary);color:#fff;border:none;font-size:1rem;cursor:pointer;}
+    #play-audio[disabled]{opacity:0.6;cursor:default}
+
+    #choices{display:flex;flex-direction:column;gap:12px;margin-top:6px;margin-bottom:8px;}
+    .choice-btn{font-size:1.25rem;padding:14px 18px;border-radius:12px;border:2px solid var(--primary);background:#eaf0ff;cursor:pointer;width:100%;max-width:720px;margin:0 auto;text-align:left;}
+    .choice-btn:disabled{opacity:0.8;cursor:default}
+    .choice-btn.correct{background:var(--good);border-color:green}
+    .choice-btn.wrong{background:var(--accent);border-color:#d9534f}
+
+    #typed-area{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+    #typed-answer{font-size:1.25rem;padding:12px;width:70%;max-width:600px;border-radius:10px;border:2px solid #ddd}
+    #submit-typed{font-size:1.15rem;padding:12px 18px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer}
+
+    #feedback{font-size:1.15rem;margin-top:12px;height:28px;font-weight:700}
+    #feedback.ok{color:green}
+    #feedback.bad{color:#d9534f}
+
+    #controls{display:flex;gap:12px;justify-content:center;margin-top:16px;}
+    .btn{padding:12px 18px;border-radius:10px;border:none;background:var(--primary);color:#fff;font-size:1rem;cursor:pointer}
+    .btn.secondary{background:#6c7aa6}
+    #next-btn{display:none}
+
+    /* results */
+    #results{display:none;margin-top:18px}
+    table{width:100%;border-collapse:collapse;margin-top:12px;font-size:1rem}
+    th,td{border:1px solid #ddd;padding:10px;text-align:left}
+    th{background:var(--primary);color:#fff}
+    td.wrong{background:var(--accent)}
+    .small{font-size:0.95rem;color:#555}
+
+    /* responsive */
+    @media (max-width:520px){
+      #question{font-size:1.5rem}
+      .choice-btn{font-size:1.05rem;padding:12px}
+      #typed-answer{width:100%}
+    }
+  </style>
 </head>
 <body>
+  <div class="wrap">
+    <header>
+      <h1>Eesti õigekirjamäng</h1>
+      <div id="progress" class="small">Küsimus <span id="q-index">0</span>/<span id="q-total">0</span></div>
+    </header>
 
-<h2>Õiged vastused: <span id="correct-count">0</span></h2>
-<h2 id="question-text"></h2>
-<img id="question-image">
-<div id="choices"></div>
-<input type="text" id="typed-answer" placeholder="Kirjuta sõna siia" style="display:none;">
-<button id="submit-answer" style="display:none;">Esita vastus</button>
-<button id="resetBtn">Alusta uuesti</button>
+    <div id="question-card">
+      <div id="correct-count">Õiged vastused: <span id="correct-num">0</span></div>
+
+      <div id="question" aria-live="polite"></div>
+
+      <div id="media">
+        <img id="question-image" alt="Küsimuse pilt">
+        <button id="play-audio" style="display:none">🔊 Kuula</button>
+      </div>
+
+      <div id="choices"></div>
+
+      <div id="typed-area" style="display:none">
+        <input id="typed-answer" placeholder="Kirjuta oma vastus siia" autocomplete="off" />
+        <button id="submit-typed" class="btn">Esita</button>
+      </div>
+
+      <div id="feedback" role="status" aria-live="polite"></div>
+
+      <div id="controls">
+        <button id="next-btn" class="btn secondary">Järgmine küsimus</button>
+        <button id="restart-btn" class="btn">Alusta uuesti</button>
+      </div>
+
+      <div id="results">
+        <h2>Tulemused</h2>
+        <div class="small">Õiged kokku: <strong id="final-correct">0</strong> / <span id="final-total">0</span></div>
+        <table id="results-table" aria-live="polite"><thead><tr><th>#</th><th>Küsimus</th><th>Sinu vastus</th><th>Õige vastus</th></tr></thead><tbody></tbody></table>
+      </div>
+    </div>
+  </div>
 
 <script>
+/* ====== App logic ====== */
 let questions = [];
-let currentQuestion = 0;
-let userAnswers = [];
+let current = 0;
 let correctCount = 0;
+let userAnswers = []; // store user's answers
+const qIndexEl = document.getElementById('q-index');
+const qTotalEl = document.getElementById('q-total');
 
-// Load questions from JSON
 async function loadQuestions() {
   try {
-    const response = await fetch('questions.json');
-    return await response.json();
-  } catch(e) {
-    console.error("Failed to load questions.json", e);
-    return [];
+    const res = await fetch('questions.json', {cache: "no-store"});
+    if(!res.ok) throw new Error('questions.json not found');
+    const data = await res.json();
+    return data;
+  } catch (e) {
+    console.warn('Failed to load questions.json, using fallback sample', e);
+    // fallback sample
+    return [
+      {"text":"Mis looma kuuled?","highlight":"looma","audio":"audio/kass.mp3","image":"images/kass.jpg","correct":"kass"},
+      {"text":"Mis on pildil?","image":"images/koer.jpg","correct":"koer"},
+      {"text":"Milline sõna on õige?","choices":["õun","oun","uun","oan"],"correct":"õun"}
+    ];
   }
 }
 
-// Show question
-function showQuestion(q) {
-  const questionText = document.getElementById('question-text');
-  const questionImage = document.getElementById('question-image');
-  const choicesContainer = document.getElementById('choices');
-  const typedInput = document.getElementById('typed-answer');
-  const submitBtn = document.getElementById('submit-answer');
+function saveProgress() {
+  localStorage.setItem('quizProgress', JSON.stringify({
+    current, correctCount, userAnswers
+  }));
+}
 
-  questionText.textContent = q.text;
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem('quizProgress');
+    if(!raw) return false;
+    const obj = JSON.parse(raw);
+    current = obj.current || 0;
+    correctCount = obj.correctCount || 0;
+    userAnswers = obj.userAnswers || [];
+    return true;
+  } catch(e){ return false; }
+}
 
-  // Highlight word if defined
-  if (q.highlight) {
-    const regex = new RegExp(`(${q.highlight})`, 'gi'); // case-insensitive
-    questionText.innerHTML = q.text.replace(regex, '<span class="highlight">$1</span>');
+function updateProgressUI(){
+  qIndexEl.textContent = Math.min(current+1, questions.length);
+  qTotalEl.textContent = questions.length;
+  document.getElementById('correct-num').textContent = correctCount;
+}
+
+/* render one question */
+function renderQuestion(){
+  if(!questions || !questions.length) return;
+  const q = questions[current];
+  updateProgressUI();
+
+  // show question text with optional highlight
+  const qEl = document.getElementById('question');
+  if(q.highlight){
+    // escape highlight for regex
+    const h = escapeRegExp(q.highlight);
+    const regex = new RegExp(`(${h})`, 'gi');
+    qEl.innerHTML = q.text.replace(regex, '<span class="highlight">$1</span>');
   } else {
-    questionText.textContent = q.text;
+    qEl.textContent = q.text;
   }
 
-  // Show image if exists
-  if (q.image) {
-    questionImage.src = q.image;
-    questionImage.style.display = 'block';
+  // image
+  const img = document.getElementById('question-image');
+  if(q.image){
+    img.src = q.image;
+    img.style.display = 'block';
+    img.alt = q.text;
   } else {
-    questionImage.style.display = 'none';
+    img.style.display = 'none';
   }
 
-  // Play audio if exists
-  if (q.audio) {
-    new Audio(q.audio).play();
-  } else if (q.tts) {
-    const utterance = new SpeechSynthesisUtterance(q.tts);
-    window.speechSynthesis.speak(utterance);
+  // audio button
+  const playBtn = document.getElementById('play-audio');
+  if(q.audio || q.tts){
+    playBtn.style.display = 'inline-flex';
+    playBtn.disabled = false;
+    playBtn.onclick = () => {
+      playAudioForQuestion(q);
+    };
+  } else {
+    playBtn.style.display = 'none';
   }
 
-  // Multiple-choice or typed-answer
-  if (q.choices) {
-    typedInput.style.display = 'none';
-    submitBtn.style.display = 'none';
-    choicesContainer.innerHTML = '';
+  // choices or typed
+  const choicesDiv = document.getElementById('choices');
+  const typedArea = document.getElementById('typed-area');
+  choicesDiv.innerHTML = '';
+  typedArea.style.display = 'none';
+  document.getElementById('feedback').textContent = '';
+
+  if(q.choices && Array.isArray(q.choices) && q.choices.length){
+    // render choice buttons
     q.choices.forEach(choice => {
       const btn = document.createElement('button');
+      btn.className = 'choice-btn';
       btn.textContent = choice;
-      btn.onclick = () => checkAnswer(choice, q.correct);
-      choicesContainer.appendChild(btn);
+      btn.onclick = () => handleAnswer(choice);
+      choicesDiv.appendChild(btn);
     });
   } else {
-    choicesContainer.innerHTML = '';
-    typedInput.style.display = 'block';
-    submitBtn.style.display = 'block';
+    // typed answer
+    typedArea.style.display = 'flex';
+    const typedInput = document.getElementById('typed-answer');
     typedInput.value = '';
-    submitBtn.onclick = () => checkAnswer(typedInput.value.trim(), q.correct);
+    typedInput.focus();
+    document.getElementById('submit-typed').onclick = () => {
+      const val = typedInput.value.trim();
+      handleAnswer(val);
+    };
+    // also allow Enter key in input
+    typedInput.onkeydown = (e) => {
+      if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('submit-typed').click(); }
+    };
   }
+
+  // hide next button until feedback shown
+  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
 }
 
-function checkAnswer(selected, correct) {
-  userAnswers[currentQuestion] = selected;
-
-  // Count correct answers
-  if (selected.toLowerCase() === correct.toLowerCase()) {
-    correctCount++;
-  }
-
-  // Update counter
-  document.getElementById('correct-count').textContent = correctCount;
-
-  // Show correct answer feedback
-  const choicesContainer = document.getElementById('choices');
-  choicesContainer.innerHTML = `<p>Õige vastus: <strong>${correct}</strong></p>`;
-  let isCorrect = selected.toLowerCase() === correct.toLowerCase();
-
-  // Show immediate feedback
-  if (isCorrect) {
-    choicesContainer.innerHTML = `<p style="color:green; font-weight:bold;">Õige! Vastus: ${correct}</p>`;
-  } else {
-    choicesContainer.innerHTML = `<p style="color:red; font-weight:bold;">Vale! Õige vastus: ${correct}</p>`;
-  }
-
-  // Save progress
-  localStorage.setItem('quizProgress', JSON.stringify({
-    currentQuestion: currentQuestion + 1,
-    answers: userAnswers,
-    correctCount: correctCount
-  }));
-
-  // Wait 5 seconds then go to next question
-  setTimeout(() => {
-    currentQuestion++;
-    if (currentQuestion < questions.length) {
-      showQuestion(questions[currentQuestion]);
-    } else {
-      showResults();
-      localStorage.removeItem('quizProgress');
+/* play audio or tts */
+function playAudioForQuestion(q){
+  if(q.audio){
+    const a = new Audio(q.audio);
+    a.play().catch(err => console.warn('Audio play failed', err));
+  } else if(q.tts){
+    if('speechSynthesis' in window){
+      const u = new SpeechSynthesisUtterance(q.tts);
+      u.rate = 0.95;
+      window.speechSynthesis.speak(u);
     }
-  }, 3000); // 3000 ms = 3 seconds
-}
-
-// Show final results
-function showResults() {
-  const questionText = document.getElementById('question-text');
-  const choicesContainer = document.getElementById('choices');
-  const questionImage = document.getElementById('question-image');
-  const typedInput = document.getElementById('typed-answer');
-  const submitBtn = document.getElementById('submit-answer');
-
-  questionText.textContent = "Mäng läbi!";
-  questionImage.style.display = 'none';
-  typedInput.style.display = 'none';
-  submitBtn.style.display = 'none';
-
-  // Build table of answers
-  let tableHTML = '<table border="1" style="border-collapse: collapse; width: 100%;">';
-  tableHTML += '<tr><th>#</th><th>Sinu vastus</th><th>Õige vastus</th></tr>';
-
-  for (let i = 0; i < questions.length; i++) {
-    const userAnswer = userAnswers[i] || '';
-    const correctAnswer = questions[i].correct || '';
-    const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
-    const cellStyle = isCorrect ? '' : 'background-color: #f8d7da;'; // red for wrong answers
-
-    tableHTML += `<tr>
-                    <td style="text-align:center;">${i + 1}</td>
-                    <td style="${cellStyle}">${userAnswer}</td>
-                    <td>${correctAnswer}</td>
-                  </tr>`;
   }
-  tableHTML += '</table>';
-
-  choicesContainer.innerHTML = `
-    <p>Õiged vastused kokku: ${correctCount} / ${questions.length}</p>
-    ${tableHTML}
-  `;
 }
 
+/* answer handling */
+function handleAnswer(selected){
+  const q = questions[current];
+  const correct = (q.correct || '').toString();
+  const normalizedSelected = (selected || '').toString().trim();
+  const isCorrect = normalizedSelected.toLowerCase() === correct.toLowerCase();
 
-// Reset game
-document.getElementById('resetBtn').addEventListener('click', () => {
-  localStorage.removeItem('quizProgress');
-  currentQuestion = 0;
-  userAnswers = [];
-  correctCount = 0;
-  document.getElementById('correct-count').textContent = 0;
-  showQuestion(questions[currentQuestion]);
-});
-
-// Load questions and resume if saved
-window.addEventListener('load', async () => {
-  questions = await loadQuestions();
-  const saved = JSON.parse(localStorage.getItem('quizProgress'));
-  if (saved) {
-    currentQuestion = saved.currentQuestion;
-    userAnswers = saved.answers;
-    correctCount = saved.correctCount || 0;
-    document.getElementById('correct-count').textContent = correctCount;
+  // mark buttons and typed area accordingly
+  const choiceBtns = document.querySelectorAll('.choice-btn');
+  if(choiceBtns && choiceBtns.length){
+    choiceBtns.forEach(b => {
+      b.disabled = true;
+      const val = b.textContent.trim().toLowerCase();
+      if(val === correct.toLowerCase()) b.classList.add('correct');
+      if(val === normalizedSelected.toLowerCase() && !isCorrect) b.classList.add('wrong');
+    });
   } else {
-    userAnswers = [];
-    correctCount = 0;
+    // typed answer: briefly indicate wrong/ok in typed input
+    const typedInput = document.getElementById('typed-answer');
+    if(isCorrect){
+      typedInput.style.borderColor = 'green';
+    } else {
+      typedInput.style.borderColor = '#d9534f';
+    }
   }
-  showQuestion(questions[currentQuestion]);
+
+  // feedback text
+  const feedback = document.getElementById('feedback');
+  if(isCorrect){
+    feedback.className = 'ok';
+    feedback.textContent = 'Õige! Vastus: ' + correct;
+    correctCount++;
+  } else {
+    feedback.className = 'bad';
+    feedback.textContent = 'Vale! Õige vastus: ' + correct;
+  }
+
+  // record answer
+  userAnswers[current] = { question: q.text, answer: normalizedSelected, correct: correct, ok: isCorrect };
+
+  // update UI & save
+  updateProgressUI();
+  saveProgress();
+
+  // show next button after short delay (or immediately if you prefer)
+  document.getElementById('next-btn').style.display = 'inline-block';
+  // auto-advance after 2s:
+  setTimeout(() => {
+    // if still on same question (user may have clicked next), advance
+    if(current < questions.length){
+      goNext();
+    }
+  }, 2000);
+}
+
+/* go to next */
+function goNext(){
+  // clear typed input border
+  const typedInput = document.getElementById('typed-answer');
+  if(typedInput) typedInput.style.borderColor = '';
+
+  current++;
+  if(current >= questions.length){
+    showResults();
+    localStorage.removeItem('quizProgress');
+    return;
+  }
+  renderQuestion();
+}
+
+/* restart */
+function restart(){
+  current = 0;
+  correctCount = 0;
+  userAnswers = [];
+  saveProgress();
+  renderQuestion();
+}
+
+/* results */
+function showResults(){
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('game')?.scrollIntoView?.(); // optional
+  document.getElementById('final-correct').textContent = correctCount;
+  document.getElementById('final-total').textContent = questions.length;
+  const tbody = document.querySelector('#results-table tbody');
+  tbody.innerHTML = '';
+  for(let i=0;i<questions.length;i++){
+    const row = document.createElement('tr');
+    const idx = document.createElement('td');
+    idx.textContent = (i+1);
+    const qcell = document.createElement('td');
+    qcell.textContent = (questions[i].text || '');
+    const acell = document.createElement('td');
+    const u = userAnswers[i] ? userAnswers[i].answer : '';
+    acell.textContent = u || '';
+    if(userAnswers[i] && !userAnswers[i].ok) acell.classList.add('wrong');
+    const ccell = document.createElement('td');
+    ccell.textContent = questions[i].correct || '';
+    row.appendChild(idx); row.appendChild(qcell); row.appendChild(acell); row.appendChild(ccell);
+    tbody.appendChild(row);
+  }
+
+  // hide question area
+  document.getElementById('question-card').scrollIntoView({behavior:'smooth'});
+  // Also hide choices/typed area
+  document.getElementById('choices').innerHTML = '';
+  document.getElementById('typed-area').style.display = 'none';
+  document.getElementById('play-audio').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+  document.getElementById('feedback').textContent = '';
+}
+
+/* helpers */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/* init */
+document.getElementById('next-btn').addEventListener('click', goNext);
+document.getElementById('restart-btn').addEventListener('click', () => {
+  localStorage.removeItem('quizProgress');
+  restart();
 });
 
-// Service Worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js')
-    .then(() => console.log('Service Worker registered'))
-    .catch(err => console.log('Service Worker failed:', err));
+// load and start
+(async () => {
+  questions = await loadQuestions();
+  qTotalEl.textContent = questions.length;
+
+  // If saved progress exists, restore
+  const restored = loadProgress();
+  if(!restored){
+    // nothing saved
+    current = 0; correctCount = 0; userAnswers = [];
+  }
+  // Clamp current
+  if(current >= questions.length) current = 0;
+
+  renderQuestion();
+})();
+
+/* Service worker registration (optional; keep if you have sw.js) */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').then(()=>console.log('SW registered')).catch(()=>console.log('SW reg fail'));
 }
 </script>
-
 </body>
 </html>
