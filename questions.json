@@ -1,5 +1,127 @@
 [
   {
+    "text": "järgarv põhiarvust 1",
+    "highlight": "1",
+    "info": "märgitakse mõnikord numbriga 1. ",
+    "highlight2": "märgitakse",
+    "choices": [
+      "esimene",
+      "teine"
+    ],
+    "correct": "esimene"
+  },
+  {
+    "text": "Vastandsõna sõnale LIHTNE",
+    "highlight": "lihtne",
+    "info": "keerukas; raske",
+    "choices": [
+      "keeruline",
+      "kohmakas",
+      "kerge"
+    ],
+    "correct": "keeruline"
+  },
+  {
+    "text": "Mitu häälikut on sõnas kool ?",
+    "highlight": "kool",
+    "info": "K – OO – L",
+    "highlight2": "oo",
+    "choices": [
+      "kaks",
+      "kolm",
+      "neli"
+    ],
+    "correct": "kolm"
+  },
+  {
+    "text": "Mitu häälikut on sõnas kallis ?",
+    "highlight": "kallis",
+    "info": "K – A – L L – I – S",
+    "highlight2": "ll",
+    "choices": [
+      "viis",
+      "kuus"
+    ],
+    "correct": "viis"
+  },
+  {
+    "text": "Mitu häälikut on sõnas öö ?",
+    "highlight": "öö",
+    "info": "ÖÖ",
+    "highlight2": "öö",
+    "choices": [
+      "üks",
+      "kaks"
+    ],
+    "correct": "üks"
+  },
+  {
+    "text": "Mitu häälikut on sõnas seen?",
+    "highlight": "seen",
+    "info": "S – EE – N",
+    "highlight2": "ee",
+    "choices": [
+      "kaks",
+      "kolm",
+      "neli"
+    ],
+    "correct": "kolm"
+  },
+  {
+    "text": "Mitu häälikut on sõnas orav?",
+    "highlight": "orav",
+    "info": "O – R – A – V",
+    "choices": [
+      "kolm",
+      "neli"
+    ],
+    "correct": "neli"
+  },
+  {
+    "text": "Mitu häälikut on sõnas pääsuke?",
+    "highlight": "pääsuke",
+    "info": "P – ÄÄ – S – U – K – E",
+    "highlight2": "ää",
+    "choices": [
+      "kuus",
+      "seitse"
+    ],
+    "correct": "kuus"
+  },
+  {
+    "text": "Mitu häälikut on sõnas pinal?",
+    "highlight": "pinal",
+    "info": "P – I – N – A – L",
+    "choices": [
+      "neli",
+      "viis",
+      "kuus"
+    ],
+    "correct": "viis"
+  },
+  {
+    "text": "Mitu häälikut on sõnas siil?",
+    "highlight": "siil",
+    "info": "S – II – L",
+    "highlight2": "ii",
+    "choices": [
+      "kolm",
+      "neli"
+    ],
+    "correct": "kolm"
+  },
+  {
+    "text": "Mitu häälikut on sõnas kallur?",
+    "highlight": "kallur",
+    "info": "K – A – LL – U – R",
+    "highlight2": "ll",
+    "choices": [
+      "viis",
+      "kuus"
+    ],
+    "correct": "viis"
+  },
+  {
     "text": "Kuidas on õige?",
     "choices": [
       "lemmik",

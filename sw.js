@@ -1,5 +1,5 @@
 // ✅ CHANGE THIS when you update your game (new files, questions, etc.)
-const CACHE_NAME = 'estonian-spelling-cache-v7';
+const CACHE_NAME = 'estonian-spelling-cache-v15';
 
 // ✅ List of all files to cache
 const FILES_TO_CACHE = [
@@ -10,7 +10,8 @@ const FILES_TO_CACHE = [
   '/audio/kass.mp3',
   '/audio/koer.mp3',
   '/images/kass.jpg',
-  '/images/koer.jpg'
+  '/images/koer.jpg',
+  '/images/haalikud.jpg'  
 ];
 
 // ✅ Install: pre-cache everything

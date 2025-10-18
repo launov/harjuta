@@ -22,7 +22,8 @@
     #question-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(30,50,90,0.06);margin-top:12px;}
     #correct-count{font-weight:700;color:var(--primary);font-size:1.05rem;margin-bottom:8px;}
     #question{font-size:1.9rem;line-height:1.2;margin:8px 0 12px 0;}
-    .highlight{background:yellow;padding:0 6px;border-radius:4px;font-weight:700;}
+    .highlight{background:rgb(122, 199, 250);padding:0 1px;border-radius:4px;font-weight: normal;}
+    .highlight2{padding:0 1px;border-radius:4px;font-weight:800;}
 
     #media{display:flex;flex-direction:column;gap:10px;align-items:center;margin-bottom:12px;}
     #question-image{max-width:100%;height:auto;border-radius:10px;display:none;box-shadow:0 4px 10px rgba(0,0,0,0.08);}
@@ -39,7 +40,7 @@
     #typed-answer{font-size:1.25rem;padding:12px;width:70%;max-width:600px;border-radius:10px;border:2px solid #ddd}
     #submit-typed{font-size:1.15rem;padding:12px 18px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer}
 
-    #feedback{font-size:1.15rem;margin-top:12px;height:28px;font-weight:700}
+    #feedback{font-size:1.15rem;margin-top:12px;height:28px;font-weight:700;margin-bottom: 80px;min-height: 1.5em; /* reserve space so layout doesn't jump */}
     #feedback.ok{color:green}
     #feedback.bad{color:#d9534f}
 
@@ -47,6 +48,9 @@
     .btn{padding:12px 18px;border-radius:10px;border:none;background:var(--primary);color:#fff;font-size:1rem;cursor:pointer}
     .btn.secondary{background:#6c7aa6}
     #next-btn{display:none}
+
+    .small-info {display: block;margin-top: 10px;font-size: 1.2rem;color: #000; /* black text */font-weight: normal;}
+
 
     /* results */
     #results{display:none;margin-top:18px}
@@ -161,14 +165,24 @@ function renderQuestion(){
 
   // show question text with optional highlight
   const qEl = document.getElementById('question');
-  if(q.highlight){
-    // escape highlight for regex
-    const h = escapeRegExp(q.highlight);
-    const regex = new RegExp(`(${h})`, 'gi');
-    qEl.innerHTML = q.text.replace(regex, '<span class="highlight">$1</span>');
-  } else {
-    qEl.textContent = q.text;
+  let html = q.text || '';
+
+  // helper to replace safely and preserve already-inserted spans
+  function safeHighlight(inputHtml, term, className) {
+    if (!term) return inputHtml;
+    const escaped = escapeRegExp(term);
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    // Replace only plain text occurrences (this will also wrap multiple occurrences)
+    return inputHtml.replace(regex, `<span class="${className}">$1</span>`);
   }
+
+  // apply highlights in sequence on the same string
+  html = safeHighlight(html, q.highlight, 'highlight');
+  html = safeHighlight(html, q.highlight2, 'highlight2');
+
+  // write once
+  qEl.innerHTML = html;
+
 
   // image
   const img = document.getElementById('question-image');
@@ -271,19 +285,30 @@ function handleAnswer(selected){
 
   // feedback text
   const feedback = document.getElementById('feedback');
-  if(isCorrect){
-    feedback.className = 'ok';
-    feedback.textContent = 'Õige! Vastus: ' + correct;
-    correctCount++;
-  } else {
-    feedback.className = 'bad';
-    feedback.textContent = 'Vale! Õige vastus: ' + correct;
+  feedback.className = isCorrect ? 'ok' : 'bad';
+  let msg = isCorrect 
+   ? 'Õige!'
+   : 'Vale! <br> Õige vastus: ' + correct ;
+  // : 'Õige vastus: ' + correct ;
+
+  if (q.info) {
+   msg += '<br><span class="small-info">' + q.info + '</span>';
   }
 
+feedback.innerHTML = msg; // Use innerHTML so <br> works
+
+
   // record answer
-  userAnswers[current] = { question: q.text, answer: normalizedSelected, correct: correct, ok: isCorrect };
+  userAnswers[current] = { 
+    question: q.text, 
+    answer: normalizedSelected, 
+    correct: correct, 
+    ok: isCorrect, 
+    info: q.info || '' 
+  };
 
   // update UI & save
+  if(isCorrect) correctCount++;
   updateProgressUI();
   saveProgress();
 
@@ -295,7 +320,7 @@ function handleAnswer(selected){
     if(current < questions.length){
       goNext();
     }
-  }, 2000);
+  }, 4000);
 }
 
 /* go to next */
