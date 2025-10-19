@@ -1,215 +1,452 @@
 [
   {
-    "text": "järgarv põhiarvust 1",
-    "highlight": "1",
-    "info": "märgitakse mõnikord numbriga 1. ",
-    "highlight2": "märgitakse",
-    "choices": [
-      "esimene",
-      "teine"
-    ],
-    "correct": "esimene"
-  },
-  {
-    "text": "Vastandsõna sõnale LIHTNE",
-    "highlight": "lihtne",
-    "info": "keerukas; raske",
-    "choices": [
-      "keeruline",
-      "kohmakas",
-      "kerge"
-    ],
-    "correct": "keeruline"
-  },
-  {
-    "text": "Mitu häälikut on sõnas kool ?",
-    "highlight": "kool",
-    "info": "K – OO – L",
-    "highlight2": "oo",
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "KOOL",
     "choices": [
       "kaks",
       "kolm",
       "neli"
     ],
-    "correct": "kolm"
+    "correct": "kolm",
+    "info": "K – OO – L",
+    "highlight2": "oo"
   },
   {
-    "text": "Mitu häälikut on sõnas kallis ?",
-    "highlight": "kallis",
-    "info": "K – A – L L – I – S",
-    "highlight2": "ll",
-    "choices": [
-      "viis",
-      "kuus"
-    ],
-    "correct": "viis"
-  },
-  {
-    "text": "Mitu häälikut on sõnas öö ?",
-    "highlight": "öö",
-    "info": "ÖÖ",
-    "highlight2": "öö",
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "ÖÖ",
     "choices": [
       "üks",
       "kaks"
     ],
-    "correct": "üks"
+    "correct": "üks",
+    "info": "ÖÖ",
+    "highlight": "öö",
+    "highlight2": "öö"
   },
   {
-    "text": "Mitu häälikut on sõnas seen?",
-    "highlight": "seen",
-    "info": "S – EE – N",
-    "highlight2": "ee",
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "SEEN",
     "choices": [
       "kaks",
       "kolm",
       "neli"
     ],
-    "correct": "kolm"
+    "correct": "kolm",
+    "info": "S – EE – N ",
+    "highlight": "seen",
+    "highlight2": "ee"
   },
   {
-    "text": "Mitu häälikut on sõnas orav?",
-    "highlight": "orav",
-    "info": "O – R – A – V",
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "ORAV",
     "choices": [
+      "kolm",
+      "neli",
+      "viis"
+    ],
+    "correct": "neli",
+    "info": "O – R – A- V",
+    "highlight": "orav"
+  },
+  {
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "PÄÄSUKE",
+    "choices": [
+      "viis",
+      "kuus",
+      "seits"
+    ],
+    "correct": "kuus",
+    "info": "P – ÄÄ – S – U – K – E",
+    "highlight": "pääsuke",
+    "highlight2": "ää"
+  },
+  {
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "SIIL",
+    "choices": [
+      "kaks",
       "kolm",
       "neli"
     ],
-    "correct": "neli"
+    "correct": "kolm",
+    "info": "S – II – L",
+    "highlight": "siil",
+    "highlight2": "ii"
   },
   {
-    "text": "Mitu häälikut on sõnas pääsuke?",
-    "highlight": "pääsuke",
-    "info": "P – ÄÄ – S – U – K – E",
-    "highlight2": "ää",
-    "choices": [
-      "kuus",
-      "seitse"
-    ],
-    "correct": "kuus"
-  },
-  {
-    "text": "Mitu häälikut on sõnas pinal?",
-    "highlight": "pinal",
-    "info": "P – I – N – A – L",
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "PINAL",
     "choices": [
       "neli",
       "viis",
       "kuus"
     ],
-    "correct": "viis"
+    "correct": "viis",
+    "info": "P – I – N – A – L",
+    "highlight": "pinal"
   },
   {
-    "text": "Mitu häälikut on sõnas siil?",
-    "highlight": "siil",
-    "info": "S – II – L",
-    "highlight2": "ii",
+    "topic": "HÄÄLIKUD",
+    "head": "Mitu häälikut on sõnas",
+    "text": "KALLUR",
     "choices": [
-      "kolm",
-      "neli"
-    ],
-    "correct": "kolm"
-  },
-  {
-    "text": "Mitu häälikut on sõnas kallur?",
-    "highlight": "kallur",
-    "info": "K – A – LL – U – R",
-    "highlight2": "ll",
-    "choices": [
+      "neli",
       "viis",
       "kuus"
     ],
-    "correct": "viis"
+    "correct": "viis",
+    "info": "K – A – LL – U- R",
+    "highlight": "kallur",
+    "highlight2": "ll"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "INGLISE KEEL",
+    "head": "Kuidas on inglise keeles",
+    "text": "TERE",
     "choices": [
-      "lemmik",
-      "lemik"
+      "HELLO",
+      "BYE",
+      "HAPPY BIRTHDAY"
     ],
-    "correct": "lemmik"
+    "correct": "hello"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "INGLISE KEEL",
+    "head": "Kuidas on inglise keeles",
+    "text": "MINU NIMI ON",
     "choices": [
-      "kalis",
+      "MY NAME IS",
+      "YOUR NAME IS",
+      "HOW ARE YOU?"
+    ],
+    "correct": "my name is"
+  },
+  {
+    "topic": "INGLISE KEEL",
+    "head": "Kuidas on inglise keeles",
+    "text": "KUIDAS SUL LÄHEB",
+    "choices": [
+      "HOW ARE YOU?",
+      "HOW OLD ARE YOU?",
+      "WHAT IS YOUR NAME?"
+    ],
+    "correct": "how are you?"
+  },
+  {
+    "topic": "INGLISE KEEL",
+    "head": "Kuidas on inglise keeles",
+    "text": "MA OLEN 8 AASTANE",
+    "choices": [
+      "I AM 8 YEARS OLD",
+      "I AM A BOY",
+      "I AM HAPPY"
+    ],
+    "correct": "I am 8 years old"
+  },
+  {
+    "topic": "INGLISE KEEL",
+    "head": "Kuidas on inglise keeles",
+    "text": "MA OLEN ÕNNELIK",
+    "choices": [
+      "I AM HAPPY",
+      "I AM SAD",
+      "I AM ANGRY"
+    ],
+    "correct": "I am happy"
+  },
+  {
+    "topic": "INGLISE KEEL",
+    "head": "Kuidas on inglise keeles",
+    "text": "HEAD AEGA",
+    "choices": [
+      "GOODBYE",
+      "HELLO",
+      "NICE TO MEET YOU"
+    ],
+    "correct": "goodbye",
+    "info": "BYE"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "suur",
+    "choices": [
+      "hele",
+      "tugev",
+      "väike"
+    ],
+    "correct": "väike"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "kõrge",
+    "choices": [
+      "madal",
+      "kauge",
+      "kiire"
+    ],
+    "correct": "madal"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "tume",
+    "choices": [
+      "pehme",
+      "hele",
+      "külm"
+    ],
+    "correct": "hele"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "kuum",
+    "choices": [
+      "kõva",
+      "pikk",
+      "külm"
+    ],
+    "correct": "külm"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "uus",
+    "choices": [
+      "õrn",
+      "vana",
       "kallis"
     ],
-    "correct": "kallis"
+    "correct": "vana"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "kiire",
     "choices": [
-      "staadion",
-      "stadion"
+      "suur",
+      "tume",
+      "aeglane"
     ],
-    "correct": "staadion"
+    "correct": "aeglane"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "rõõmus",
     "choices": [
-      "pois",
-      "poiss"
+      "märg",
+      "kurb",
+      "pikk"
     ],
-    "correct": "poiss"
+    "correct": "kurb"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "raske",
     "choices": [
-      "sünipäev",
-      "sünnipäev"
+      "hele",
+      "uus",
+      "kerge"
     ],
-    "correct": "sünnipäev"
+    "correct": "kerge"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "paks",
     "choices": [
-      "tiivan",
-      "diivan",
-      "tivan"
+      "õhuke",
+      "vali",
+      "kiire"
     ],
-    "correct": "diivan"
+    "correct": "õhuke"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "tark",
     "choices": [
-      "aff",
-      "ahv",
-      "af"
+      "vana",
+      "tume",
+      "rumal"
     ],
-    "correct": "ahv"
+    "correct": "rumal"
   },
   {
-    "text": "Kuidas on õige?",
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "kallis",
     "choices": [
-      "kohv",
-      "kof",
-      "koff"
+      "tugev",
+      "tühi",
+      "odav"
     ],
-    "correct": "kohv"
+    "correct": "odav"
   },
   {
-    "text": "Kirjuta vastandsõna sõnale ÕHTU",
-    "highlight": "sõnale",
-    "correct": "hommik"
-  },
-  {
-    "text": "Kuidas on õige kirjutada?",
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "ilus",
     "choices": [
-      "tassima",
-      "tasima",
-      "taasima"
+      "kole",
+      "kiire",
+      "märg"
     ],
-    "correct": "tassima"
+    "correct": "kole"
   },
   {
-    "text": "Mis sõna sa kuuled?",
-    "audio": "audio/kass.mp3",
-    "correct": "kass"
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "pikk",
+    "choices": [
+      "kitsas",
+      "soe",
+      "lühike"
+    ],
+    "correct": "lühike"
   },
   {
-    "text": "Mis on pildil?",
-    "image": "images/koer.jpg",
-    "correct": "koer"
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "avatud",
+    "choices": [
+      "tume",
+      "suletud",
+      "rikas"
+    ],
+    "correct": "suletud"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "puhas",
+    "choices": [
+      "kallis",
+      "must",
+      "vana"
+    ],
+    "correct": "must"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "tühi",
+    "choices": [
+      "täis",
+      "kena",
+      "paks"
+    ],
+    "correct": "täis"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "magus",
+    "choices": [
+      "hele",
+      "mõru",
+      "nõrk"
+    ],
+    "correct": "mõru"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "märg",
+    "choices": [
+      "kuiv",
+      "kõrge",
+      "lühike"
+    ],
+    "correct": "kuiv"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "tugev",
+    "choices": [
+      "ilus",
+      "nõrk",
+      "uus"
+    ],
+    "correct": "nõrk"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "julge",
+    "choices": [
+      "arg",
+      "sarnane",
+      "magus"
+    ],
+    "correct": "arg"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "rahulik",
+    "choices": [
+      "soe",
+      "pehme",
+      "ärev"
+    ],
+    "correct": "ärev"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "pehme",
+    "choices": [
+      "rikas",
+      "kõva",
+      "tume"
+    ],
+    "correct": "kõva"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "sõbralik",
+    "choices": [
+      "kiire",
+      "pikk",
+      "vaenulik"
+    ],
+    "correct": "vaenulik"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "tõsi",
+    "choices": [
+      "pehme",
+      "vale",
+      "tume"
+    ],
+    "correct": "vale"
+  },
+  {
+    "topic": "ANTONÜÜMID",
+    "head": "Kirjuta vastandsõna",
+    "text": "algus",
+    "choices": [
+      "külm",
+      "lõpp",
+      "raske"
+    ],
+    "correct": "lõpp"
   }
 ]

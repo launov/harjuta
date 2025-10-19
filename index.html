@@ -1,66 +1,53 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Eesti keel PWA</title>
+  <title>Õppemäng</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0077cc" />
   <style>
     :root{
       --primary:#2a4b8d;
-      --accent:#f8d7da; /* light red for wrong */
+      --accent:#f8d7da;
       --good:#a9f5a9;
       --bg:#f3f8ff;
     }
-    body{font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:var(--bg); margin:0; padding:0; color:#222;}
+    body{font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;background:var(--bg);margin:0;padding:0;color:#222;}
     .wrap{max-width:900px;margin:0 auto;padding:18px;}
     header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
     h1{font-size:1.6rem;color:var(--primary);margin:0;}
     #progress{font-size:1rem;color:#444;}
-
     #question-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(30,50,90,0.06);margin-top:12px;}
-    #correct-count{font-weight:700;color:var(--primary);font-size:1.05rem;margin-bottom:8px;}
-    #question{font-size:1.9rem;line-height:1.2;margin:8px 0 12px 0;}
-    .highlight{background:rgb(122, 199, 250);padding:0 1px;border-radius:4px;font-weight: normal;}
+    .highlight{background:rgb(122,199,250);padding:0 1px;border-radius:4px;font-weight:normal;}
     .highlight2{padding:0 1px;border-radius:4px;font-weight:800;}
-
     #media{display:flex;flex-direction:column;gap:10px;align-items:center;margin-bottom:12px;}
     #question-image{max-width:100%;height:auto;border-radius:10px;display:none;box-shadow:0 4px 10px rgba(0,0,0,0.08);}
     #play-audio{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;background:var(--primary);color:#fff;border:none;font-size:1rem;cursor:pointer;}
     #play-audio[disabled]{opacity:0.6;cursor:default}
-
     #choices{display:flex;flex-direction:column;gap:12px;margin-top:6px;margin-bottom:8px;}
     .choice-btn{font-size:1.25rem;padding:14px 18px;border-radius:12px;border:2px solid var(--primary);background:#eaf0ff;cursor:pointer;width:100%;max-width:720px;margin:0 auto;text-align:left;}
     .choice-btn:disabled{opacity:0.8;cursor:default}
     .choice-btn.correct{background:var(--good);border-color:green}
     .choice-btn.wrong{background:var(--accent);border-color:#d9534f}
-
     #typed-area{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
     #typed-answer{font-size:1.25rem;padding:12px;width:70%;max-width:600px;border-radius:10px;border:2px solid #ddd}
     #submit-typed{font-size:1.15rem;padding:12px 18px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer}
-
-    #feedback{font-size:1.15rem;margin-top:12px;height:28px;font-weight:700;margin-bottom: 80px;min-height: 1.5em; /* reserve space so layout doesn't jump */}
-    #feedback.ok{color:green}
-    #feedback.bad{color:#d9534f}
-
+    #feedback{font-size:1.15rem;margin-top:12px;height:28px;font-weight:700;min-height:1.5em;margin-bottom:80px;}
+    #feedback.ok{color:green} #feedback.bad{color:#d9534f}
     #controls{display:flex;gap:12px;justify-content:center;margin-top:16px;}
     .btn{padding:12px 18px;border-radius:10px;border:none;background:var(--primary);color:#fff;font-size:1rem;cursor:pointer}
     .btn.secondary{background:#6c7aa6}
     #next-btn{display:none}
-
-    .small-info {display: block;margin-top: 10px;font-size: 1.2rem;color: #000; /* black text */font-weight: normal;}
-
-
-    /* results */
+    .small-info{display:block;margin-top:10px;font-size:1.2rem;color:#000;font-weight:normal;}
     #results{display:none;margin-top:18px}
     table{width:100%;border-collapse:collapse;margin-top:12px;font-size:1rem}
     th,td{border:1px solid #ddd;padding:10px;text-align:left}
     th{background:var(--primary);color:#fff}
     td.wrong{background:var(--accent)}
     .small{font-size:0.95rem;color:#555}
-
-    /* responsive */
+    #topic-selection{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
     @media (max-width:520px){
       #question{font-size:1.5rem}
       .choice-btn{font-size:1.05rem;padding:12px}
@@ -69,351 +56,189 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Eesti õigekirjamäng</h1>
-      <div id="progress" class="small">Küsimus <span id="q-index">0</span>/<span id="q-total">0</span></div>
-    </header>
+<div class="wrap">
+  <header>
+    <h1>Õppemäng</h1>
+    <div id="progress" class="small">Küsimus <span id="q-index">0</span>/<span id="q-total">0</span></div>
+  </header>
 
-    <div id="question-card">
+  <div id="topic-selection"></div>
+
+  <div id="question-card" style="display:none;">
+    <div id="top-info" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+      <div id="question-topic" class="small" style="color:#555; font-size:1rem;"></div>
       <div id="correct-count">Õiged vastused: <span id="correct-num">0</span></div>
-
-      <div id="question" aria-live="polite"></div>
-
-      <div id="media">
-        <img id="question-image" alt="Küsimuse pilt">
-        <button id="play-audio" style="display:none">🔊 Kuula</button>
-      </div>
-
-      <div id="choices"></div>
-
-      <div id="typed-area" style="display:none">
-        <input id="typed-answer" placeholder="Kirjuta oma vastus siia" autocomplete="off" />
-        <button id="submit-typed" class="btn">Esita</button>
-      </div>
-
-      <div id="feedback" role="status" aria-live="polite"></div>
-
-      <div id="controls">
-        <button id="next-btn" class="btn secondary">Järgmine küsimus</button>
-        <button id="restart-btn" class="btn">Alusta uuesti</button>
-      </div>
-
-      <div id="results">
-        <h2>Tulemused</h2>
-        <div class="small">Õiged kokku: <strong id="final-correct">0</strong> / <span id="final-total">0</span></div>
-        <table id="results-table" aria-live="polite"><thead><tr><th>#</th><th>Küsimus</th><th>Sinu vastus</th><th>Õige vastus</th></tr></thead><tbody></tbody></table>
-      </div>
+    </div>
+    <div id="question" aria-live="polite"></div>
+    <div id="media">
+      <img id="question-image" alt="Küsimuse pilt">
+      <button id="play-audio" style="display:none">🔊 Kuula</button>
+    </div>
+    <div id="choices"></div>
+    <div id="typed-area" style="display:none">
+      <input id="typed-answer" placeholder="Kirjuta oma vastus siia" autocomplete="off" />
+      <button id="submit-typed" class="btn">Esita</button>
+    </div>
+    <div id="feedback" role="status" aria-live="polite"></div>
+    <div id="controls">
+      <button id="next-btn" class="btn secondary">Järgmine küsimus</button>
+      <button id="restart-btn" class="btn">Alusta uuesti</button>
+    </div>
+    <div id="results">
+      <h2>Tulemused</h2>
+      <div class="small">Õiged kokku: <strong id="final-correct">0</strong> / <span id="final-total">0</span></div>
+      <table id="results-table" aria-live="polite">
+        <thead><tr><th>#</th><th>Teema</th><th>Küsimus</th><th>Sinu vastus</th><th>Õige vastus</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <button id="save-screenshot" class="btn">📸 Salvesta tulemus</button>
     </div>
   </div>
+</div>
 
 <script>
-/* ====== App logic ====== */
-let questions = [];
-let current = 0;
-let correctCount = 0;
-let userAnswers = []; // store user's answers
+let questions = [], filteredQuestions = [], current = 0, correctCount = 0, userAnswers = [], selectedTopic = null;
 const qIndexEl = document.getElementById('q-index');
 const qTotalEl = document.getElementById('q-total');
 
-async function loadQuestions() {
-  try {
-    const res = await fetch('questions.json', {cache: "no-store"});
+async function loadQuestions(){
+  try{
+    const res = await fetch('questions.json',{cache:"no-store"});
     if(!res.ok) throw new Error('questions.json not found');
-    const data = await res.json();
-    return data;
-  } catch (e) {
-    console.warn('Failed to load questions.json, using fallback sample', e);
-    // fallback sample
+    return await res.json();
+  }catch(e){
+    console.warn('Using fallback sample', e);
     return [
-      {"text":"Mis looma kuuled?","highlight":"looma","audio":"audio/kass.mp3","image":"images/kass.jpg","correct":"kass"},
-      {"text":"Mis on pildil?","image":"images/koer.jpg","correct":"koer"},
-      {"text":"Milline sõna on õige?","choices":["õun","oun","uun","oan"],"correct":"õun"}
+      {"topic":"Loomad","head":"Mis looma on","text":"kuulda?","highlight":"kuulda","audio":"audio/kass.mp3","image":"images/kass.jpg","correct":"kass","info":"See on kass."},
+      {"topic":"Loomad","head":"Mis looma on","text":"pildil?","image":"images/koer.jpg","correct":"koer"},
+      {"topic":"Puu","head":"Milline sõna on","text":"õige?","choices":["õun","oun","uun","oan"],"correct":"õun"}
     ];
   }
 }
 
-function saveProgress() {
-  localStorage.setItem('quizProgress', JSON.stringify({
-    current, correctCount, userAnswers
-  }));
-}
-
-function loadProgress() {
-  try {
-    const raw = localStorage.getItem('quizProgress');
-    if(!raw) return false;
-    const obj = JSON.parse(raw);
-    current = obj.current || 0;
-    correctCount = obj.correctCount || 0;
-    userAnswers = obj.userAnswers || [];
-    return true;
-  } catch(e){ return false; }
-}
+function saveProgress(){localStorage.setItem('quizProgress',JSON.stringify({current,correctCount,userAnswers,selectedTopic}));}
+function loadProgress(){try{const raw=localStorage.getItem('quizProgress');if(!raw)return false;const obj=JSON.parse(raw);current=obj.current||0;correctCount=obj.correctCount||0;userAnswers=obj.userAnswers||[];selectedTopic=obj.selectedTopic||null;return true}catch(e){return false;}}
 
 function updateProgressUI(){
-  qIndexEl.textContent = Math.min(current+1, questions.length);
-  qTotalEl.textContent = questions.length;
+  qIndexEl.textContent = Math.min(current+1,filteredQuestions.length);
+  qTotalEl.textContent = filteredQuestions.length;
   document.getElementById('correct-num').textContent = correctCount;
 }
 
-/* render one question */
+function shuffleArray(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
 function renderQuestion(){
-  if(!questions || !questions.length) return;
-  const q = questions[current];
+  const q = filteredQuestions[current];
   updateProgressUI();
+  const qEl=document.getElementById('question');
+  let fullText = (q.head?q.head+' ':'') + (q.text||'');
+  // always highlight q.text
+  const escapedText = q.text ? q.text.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') : '';
+  fullText = fullText.replace(new RegExp(`(${escapedText})`,'gi'),`<span class="highlight">$1</span>`);
+  // optional second highlight
+  if(q.highlight2) fullText = fullText.replace(new RegExp(`(${q.highlight2})`,'gi'),`<span class="highlight2">$1</span>`);
+  qEl.innerHTML = fullText;
 
-  // show question text with optional highlight
-  const qEl = document.getElementById('question');
-  let html = q.text || '';
+  const img=document.getElementById('question-image'); if(q.image){img.src=q.image;img.style.display='block';img.alt=fullText;}else{img.style.display='none';}
+  const playBtn=document.getElementById('play-audio'); if(q.audio){playBtn.style.display='inline-flex';playBtn.onclick=()=>new Audio(q.audio).play();}else{playBtn.style.display='none';}
 
-  // helper to replace safely and preserve already-inserted spans
-  function safeHighlight(inputHtml, term, className) {
-    if (!term) return inputHtml;
-    const escaped = escapeRegExp(term);
-    const regex = new RegExp(`(${escaped})`, 'gi');
-    // Replace only plain text occurrences (this will also wrap multiple occurrences)
-    return inputHtml.replace(regex, `<span class="${className}">$1</span>`);
-  }
+  const choicesDiv=document.getElementById('choices'); const typedArea=document.getElementById('typed-area'); choicesDiv.innerHTML=''; typedArea.style.display='none'; document.getElementById('feedback').textContent='';
 
-  // apply highlights in sequence on the same string
-  html = safeHighlight(html, q.highlight, 'highlight');
-  html = safeHighlight(html, q.highlight2, 'highlight2');
-
-  // write once
-  qEl.innerHTML = html;
-
-
-  // image
-  const img = document.getElementById('question-image');
-  if(q.image){
-    img.src = q.image;
-    img.style.display = 'block';
-    img.alt = q.text;
+  if(q.choices){
+    shuffleArray(q.choices).forEach(c=>{const b=document.createElement('button'); b.className='choice-btn'; b.textContent=c; b.onclick=()=>handleAnswer(c); choicesDiv.appendChild(b);});
   } else {
-    img.style.display = 'none';
+    typedArea.style.display='flex';
+    const typedInput=document.getElementById('typed-answer');
+    typedInput.value=''; typedInput.focus();
+    document.getElementById('submit-typed').onclick=()=>handleAnswer(typedInput.value.trim());
+    typedInput.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();document.getElementById('submit-typed').click();}};
   }
-
-  // audio button
-  const playBtn = document.getElementById('play-audio');
-  if(q.audio || q.tts){
-    playBtn.style.display = 'inline-flex';
-    playBtn.disabled = false;
-    playBtn.onclick = () => {
-      playAudioForQuestion(q);
-    };
-  } else {
-    playBtn.style.display = 'none';
-  }
-
-  // choices or typed
-  const choicesDiv = document.getElementById('choices');
-  const typedArea = document.getElementById('typed-area');
-  choicesDiv.innerHTML = '';
-  typedArea.style.display = 'none';
-  document.getElementById('feedback').textContent = '';
-
-  if(q.choices && Array.isArray(q.choices) && q.choices.length){
-    // render choice buttons
-    q.choices.forEach(choice => {
-      const btn = document.createElement('button');
-      btn.className = 'choice-btn';
-      btn.textContent = choice;
-      btn.onclick = () => handleAnswer(choice);
-      choicesDiv.appendChild(btn);
-    });
-  } else {
-    // typed answer
-    typedArea.style.display = 'flex';
-    const typedInput = document.getElementById('typed-answer');
-    typedInput.value = '';
-    typedInput.focus();
-    document.getElementById('submit-typed').onclick = () => {
-      const val = typedInput.value.trim();
-      handleAnswer(val);
-    };
-    // also allow Enter key in input
-    typedInput.onkeydown = (e) => {
-      if(e.key === 'Enter'){ e.preventDefault(); document.getElementById('submit-typed').click(); }
-    };
-  }
-
-  // hide next button until feedback shown
-  document.getElementById('next-btn').style.display = 'none';
-  document.getElementById('results').style.display = 'none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('results').style.display='none';
 }
 
-/* play audio or tts */
-function playAudioForQuestion(q){
-  if(q.audio){
-    const a = new Audio(q.audio);
-    a.play().catch(err => console.warn('Audio play failed', err));
-  } else if(q.tts){
-    if('speechSynthesis' in window){
-      const u = new SpeechSynthesisUtterance(q.tts);
-      u.rate = 0.95;
-      window.speechSynthesis.speak(u);
-    }
-  }
-}
-
-/* answer handling */
 function handleAnswer(selected){
-  const q = questions[current];
-  const correct = (q.correct || '').toString();
-  const normalizedSelected = (selected || '').toString().trim();
-  const isCorrect = normalizedSelected.toLowerCase() === correct.toLowerCase();
+  const q=filteredQuestions[current], correct=(q.correct||'').toString(), val=(selected||'').toString().trim(), isCorrect=val.toLowerCase()===correct.toLowerCase();
+  const choiceBtns=document.querySelectorAll('.choice-btn'); if(choiceBtns)choiceBtns.forEach(b=>{b.disabled=true; const bval=b.textContent.trim().toLowerCase(); if(bval===correct.toLowerCase())b.classList.add('correct'); if(bval===val.toLowerCase()&&!isCorrect)b.classList.add('wrong');});
+  const typedInput=document.getElementById('typed-answer'); if(typedInput){typedInput.style.borderColor=isCorrect?'green':'#d9534f';}
 
-  // mark buttons and typed area accordingly
-  const choiceBtns = document.querySelectorAll('.choice-btn');
-  if(choiceBtns && choiceBtns.length){
-    choiceBtns.forEach(b => {
-      b.disabled = true;
-      const val = b.textContent.trim().toLowerCase();
-      if(val === correct.toLowerCase()) b.classList.add('correct');
-      if(val === normalizedSelected.toLowerCase() && !isCorrect) b.classList.add('wrong');
-    });
-  } else {
-    // typed answer: briefly indicate wrong/ok in typed input
-    const typedInput = document.getElementById('typed-answer');
-    if(isCorrect){
-      typedInput.style.borderColor = 'green';
-    } else {
-      typedInput.style.borderColor = '#d9534f';
-    }
-  }
+  const feedback=document.getElementById('feedback');
+  feedback.className=isCorrect?'ok':'bad';
+  let msg=isCorrect?'Õige!':'Vale! <br> Õige vastus: '+correct;
+  if(q.info) msg+='<br><span class="small-info">'+q.info+'</span>';
+  feedback.innerHTML=msg;
 
-  // feedback text
-  const feedback = document.getElementById('feedback');
-  feedback.className = isCorrect ? 'ok' : 'bad';
-  let msg = isCorrect 
-   ? 'Õige!'
-   : 'Vale! <br> Õige vastus: ' + correct ;
-  // : 'Õige vastus: ' + correct ;
-
-  if (q.info) {
-   msg += '<br><span class="small-info">' + q.info + '</span>';
-  }
-
-feedback.innerHTML = msg; // Use innerHTML so <br> works
-
-
-  // record answer
-  userAnswers[current] = { 
-    question: q.text, 
-    answer: normalizedSelected, 
-    correct: correct, 
-    ok: isCorrect, 
-    info: q.info || '' 
-  };
-
-  // update UI & save
+  userAnswers[current]={question:(q.head?q.head+' ':'')+q.text,answer:val,correct:correct,ok:isCorrect,topic:q.topic,info:q.info||''};
   if(isCorrect) correctCount++;
-  updateProgressUI();
-  saveProgress();
-
-  // show next button after short delay (or immediately if you prefer)
-  document.getElementById('next-btn').style.display = 'inline-block';
-  // auto-advance after 2s:
-  setTimeout(() => {
-    // if still on same question (user may have clicked next), advance
-    if(current < questions.length){
-      goNext();
-    }
-  }, 4000);
+  updateProgressUI(); saveProgress();
+  document.getElementById('next-btn').style.display='inline-block';
+  setTimeout(()=>{if(current<filteredQuestions.length) goNext();},2000);
 }
 
-/* go to next */
-function goNext(){
-  // clear typed input border
-  const typedInput = document.getElementById('typed-answer');
-  if(typedInput) typedInput.style.borderColor = '';
+function goNext(){document.getElementById('typed-answer').style.borderColor=''; current++; if(current>=filteredQuestions.length){showResults();localStorage.removeItem('quizProgress');return;} renderQuestion();}
+function restart(){current=0;correctCount=0;userAnswers=[];saveProgress();showTopicSelection();}
 
-  current++;
-  if(current >= questions.length){
-    showResults();
-    localStorage.removeItem('quizProgress');
-    return;
-  }
-  renderQuestion();
-}
-
-/* restart */
-function restart(){
-  current = 0;
-  correctCount = 0;
-  userAnswers = [];
-  saveProgress();
-  renderQuestion();
-}
-
-/* results */
 function showResults(){
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('game')?.scrollIntoView?.(); // optional
-  document.getElementById('final-correct').textContent = correctCount;
-  document.getElementById('final-total').textContent = questions.length;
-  const tbody = document.querySelector('#results-table tbody');
-  tbody.innerHTML = '';
-  for(let i=0;i<questions.length;i++){
-    const row = document.createElement('tr');
-    const idx = document.createElement('td');
-    idx.textContent = (i+1);
-    const qcell = document.createElement('td');
-    qcell.textContent = (questions[i].text || '');
-    const acell = document.createElement('td');
-    const u = userAnswers[i] ? userAnswers[i].answer : '';
-    acell.textContent = u || '';
-    if(userAnswers[i] && !userAnswers[i].ok) acell.classList.add('wrong');
-    const ccell = document.createElement('td');
-    ccell.textContent = questions[i].correct || '';
-    row.appendChild(idx); row.appendChild(qcell); row.appendChild(acell); row.appendChild(ccell);
-    tbody.appendChild(row);
-  }
-
-  // hide question area
+  document.getElementById('results').style.display='block';
   document.getElementById('question-card').scrollIntoView({behavior:'smooth'});
-  // Also hide choices/typed area
-  document.getElementById('choices').innerHTML = '';
-  document.getElementById('typed-area').style.display = 'none';
-  document.getElementById('play-audio').style.display = 'none';
-  document.getElementById('next-btn').style.display = 'none';
-  document.getElementById('feedback').textContent = '';
+  document.getElementById('choices').innerHTML='';
+  document.getElementById('typed-area').style.display='none';
+  document.getElementById('play-audio').style.display='none';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('feedback').textContent='';
+
+  document.getElementById('final-correct').textContent=correctCount;
+  document.getElementById('final-total').textContent=filteredQuestions.length;
+  const tbody=document.querySelector('#results-table tbody'); tbody.innerHTML='';
+  userAnswers.forEach((a,i)=>{
+    const row=document.createElement('tr');
+    ['','topic','question','answer','correct'].forEach((key,j)=>{
+      const td=document.createElement('td');
+      if(j===0) td.textContent=i+1;
+      else if(key==='topic') td.textContent=a.topic||'';
+      else if(key==='question') td.textContent=a.question||'';
+      else if(key==='answer'){td.textContent=a.answer||''; if(!a.ok) td.classList.add('wrong');}
+      else if(key==='correct') td.textContent=a.correct||'';
+      row.appendChild(td);
+    });
+    tbody.appendChild(row);
+  });
 }
 
-/* helpers */
-function escapeRegExp(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function showTopicSelection(){
+  const container=document.getElementById('topic-selection');
+  container.style.display='flex';
+  document.getElementById('question-card').style.display='none';
+  const topics=[...new Set(questions.map(q=>q.topic).filter(Boolean))];
+  container.innerHTML='<h2>Vali teema</h2>';
+  topics.forEach(t=>{
+    const btn=document.createElement('button');
+    btn.className='btn'; btn.textContent=t; btn.onclick=()=>{
+      selectedTopic=t;
+      filteredQuestions=questions.filter(q=>q.topic===t);
+      container.style.display='none';
+      document.getElementById('question-card').style.display='block';
+      document.getElementById('question-topic').textContent = selectedTopic;
+      renderQuestion();
+    };
+    container.appendChild(btn);
+  });
 }
 
-/* init */
-document.getElementById('next-btn').addEventListener('click', goNext);
-document.getElementById('restart-btn').addEventListener('click', () => {
-  localStorage.removeItem('quizProgress');
-  restart();
+document.getElementById('next-btn').addEventListener('click',goNext);
+document.getElementById('restart-btn').addEventListener('click',()=>{localStorage.removeItem('quizProgress');restart();});
+document.getElementById('save-screenshot').addEventListener('click',()=>{
+  html2canvas(document.getElementById('results')).then(canvas=>{
+    const link=document.createElement('a'); link.download='tulemused.png'; link.href=canvas.toDataURL('image/png'); link.click();
+  });
 });
 
-// load and start
-(async () => {
-  questions = await loadQuestions();
-  qTotalEl.textContent = questions.length;
-
-  // If saved progress exists, restore
-  const restored = loadProgress();
-  if(!restored){
-    // nothing saved
-    current = 0; correctCount = 0; userAnswers = [];
-  }
-  // Clamp current
-  if(current >= questions.length) current = 0;
-
-  renderQuestion();
+(async()=>{
+  questions=await loadQuestions();
+  const restored=loadProgress();
+  if(!restored) selectedTopic=null;
+  showTopicSelection();
 })();
-
-/* Service worker registration (optional; keep if you have sw.js) */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').then(()=>console.log('SW registered')).catch(()=>console.log('SW reg fail'));
-}
 </script>
 </body>
 </html>
